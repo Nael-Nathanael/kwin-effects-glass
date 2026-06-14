@@ -555,30 +555,6 @@
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout">
-             <item>
-              <widget class="QLabel" name="labelGlowColor">
-               <property name="text">
-                <string>Glow color</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="kcfg_GlowColor">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>Enter a color in #AARRGGBB format. The A (alpha) channel sets glow strength.</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="tintAndEdgeOptionsLayout">
              <item>
               <layout class="QVBoxLayout" name="edgeLightingOptionsLayout">
@@ -826,7 +802,7 @@
      </widget>
      <widget class="QWidget" name="widget">
       <attribute name="title">
-       <string>Refraction</string>
+       <string>Refraction + Rim</string>
       </attribute>
       <layout class="QVBoxLayout">
        <item>
@@ -1318,6 +1294,106 @@
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="rimGroupBox">
+             <property name="title">
+              <string>Rim</string>
+             </property>
+             <layout class="QVBoxLayout">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayoutRimWidth">
+                <item>
+                 <widget class="QLabel" name="labelRimWidth">
+                  <property name="text">
+                   <string>Rim width</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelRimWidthThin">
+                  <property name="text">
+                   <string>Thin</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="kcfg_RimWidth">
+                  <property name="minimum">
+                   <number>10</number>
+                  </property>
+                  <property name="maximum">
+                   <number>40</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="pageStep">
+                   <number>1</number>
+                  </property>
+                  <property name="value">
+                   <number>10</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TickPosition::TicksBelow</enum>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelRimWidthWide">
+                  <property name="text">
+                   <string>Wide</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayoutRimGlowColor">
+                <item>
+                 <widget class="QLabel" name="labelGlowColor">
+                  <property name="text">
+                   <string>Glow color</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="kcfg_GlowColor">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>Enter a color in #AARRGGBB format. The A (alpha) channel sets glow strength.</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="kcfg_RimGlow">
+                <property name="text">
+                 <string>Glow</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="kcfg_RimSpecular">
+                <property name="text">
+                 <string>Specular</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer">

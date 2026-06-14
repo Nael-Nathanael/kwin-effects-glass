@@ -44,6 +44,15 @@
         <entry name="GlowColor" type="String">
             <default>#00000000</default>
         </entry>
+        <entry name="RimGlow" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="RimSpecular" type="Bool">
+            <default>true</default>
+        </entry>
+        <entry name="RimWidth" type="Int">
+            <default>10</default>
+        </entry>
         <entry name="BlurStrength" type="Int">
             <default>15</default>
         </entry>

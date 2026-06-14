@@ -1,25 +1,33 @@
 uniform vec3 glowColor;
 uniform float glowStrength;
 uniform int edgeLighting;
+uniform int rimGlow;
+uniform int rimSpecular;
+uniform float rimWidth;
 
 vec3 glassGlow(vec2 position, GlassFragment s)
 {
-    float rimMask = clamp(0.25 * s.concaveFactor, 0.0, glowStrength);
-    vec3 glow = mix(s.color.rgb, glowColor, rimMask);
-    if (edgeLighting == 1) {
-        glow += (s.color.rgb * s.concaveFactor);
+    vec3 result = s.color.rgb;
+
+    if (rimGlow == 1) {
+        float rimMask = clamp(0.25 * s.concaveFactor, 0.0, glowStrength);
+        result = mix(result, glowColor, rimMask);
     }
 
-    return glow;
+    if (edgeLighting == 1) {
+        result += (s.color.rgb * s.concaveFactor);
+    }
+
+    return result;
 }
 
 vec3 glassOutline(vec2 position, GlassFragment s)
 {
-    vec3 glow = s.color.rgb;
+    vec3 result = s.color.rgb;
 
-    if (glowStrength > 0.0) {
-        float edgeMask = smoothstep(0.0, -2.0, s.dist);
-        float borderInner = smoothstep(-1.0, -3.0, s.dist);
+    if (rimSpecular == 1) {
+        float edgeMask = smoothstep(0.0, -2.0 * rimWidth, s.dist);
+        float borderInner = smoothstep(-1.0 * rimWidth, -3.0 * rimWidth, s.dist);
         float edgeProfile = edgeMask - borderInner;
         float thicknessShadow = pow(edgeProfile, 0.9);
         float shadowMask = smoothstep(blurSize.y * 0.7, -blurSize.y * 0.7, position.y) *
@@ -27,9 +35,9 @@ vec3 glassOutline(vec2 position, GlassFragment s)
         float highlightMask = smoothstep(-blurSize.y * 0.7, blurSize.y * 0.7, position.y) *
                               smoothstep(-blurSize.x * 0.7, blurSize.x * 0.7, position.x);
 
-        glow = mix(glow, vec3(1.0), thicknessShadow * shadowMask);
-        glow = mix(glow, vec3(1.0), thicknessShadow * highlightMask);
+        result = mix(result, vec3(1.0), thicknessShadow * shadowMask);
+        result = mix(result, vec3(1.0), thicknessShadow * highlightMask);
     }
 
-    return glow;
+    return result;
 }
