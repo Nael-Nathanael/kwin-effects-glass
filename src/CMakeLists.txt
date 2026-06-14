@@ -8,10 +8,12 @@ file(READ shaders/compat_core.glsl COMPAT_CORE)
 #file(READ shaders/compat_legacy.glsl COMPAT_LEGACY)
 file(READ shaders/oklab.glsl OKLAB_SHADER)
 file(READ shaders/snells-glass.glsl SNELLS_GLASS_SHADER)
+file(READ shaders/rim.glsl RIM_SHADER)
 file(READ shaders/glass.glsl GLASS_SHADER)
 
-# Pre-expand snells-glass.glsl into glass.glsl
+# Pre-expand snells-glass.glsl and rim.glsl into glass.glsl
 string(REPLACE "#include \"snells-glass.glsl\"" "${SNELLS_GLASS_SHADER}" GLASS_SHADER "${GLASS_SHADER}")
+string(REPLACE "#include \"rim.glsl\"" "${RIM_SHADER}" GLASS_SHADER "${GLASS_SHADER}")
 
 # Generate a core shader variant from a single .glsl source.
 # Output goes into generated/ to keep source shaders/ clean.

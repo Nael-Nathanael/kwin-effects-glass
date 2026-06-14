@@ -3,16 +3,11 @@ uniform float tintGray;
 uniform float tintStrength;
 uniform vec2 autoTintAlphaRange;
 uniform int autoTintAlpha;
-uniform vec3 glowColor;
-uniform float glowStrength;
-uniform int edgeLighting;
 
 uniform float edgeSizePixels;
 uniform float refractionStrength;
 uniform float refractionNormalPow;
 uniform float refractionRGBFringing;
-uniform float refractionOffsetStrength;
-uniform float refractionBevelIntensity;
 uniform int physicallyBasedRefraction;
 
 float roundedRectangleDist(vec2 p, vec2 b, vec4 cornerRadius)
@@ -34,6 +29,7 @@ struct GlassFragment {
 };
 
 #include "snells-glass.glsl"
+#include "rim.glsl"
 
 vec4 roundedRectangle(vec2 fragCoord, vec3 color, vec4 cornerRadius)
 {
@@ -85,38 +81,6 @@ GlassFragment glassRefraction(vec2 position, vec2 halfBlurSize, vec4 cornerRadiu
         texture(texUnit, coordG).a
     );
     return GlassFragment(color, dist, edgeFactor, concaveFactor, vec3(0.0, 0.0, 1.0), 1.0);
-}
-
-vec3 glassGlow(vec2 position, GlassFragment s)
-{
-    float rimMask = clamp(0.25 * s.concaveFactor, 0.0, glowStrength);
-    vec3 glow = mix(s.color.rgb, glowColor, rimMask);
-    if (edgeLighting == 1) {
-        glow += (s.color.rgb * s.concaveFactor);
-    }
-
-    return glow;
-}
-
-vec3 glassOutline(vec2 position, GlassFragment s)
-{
-    vec3 glow = s.color.rgb;
-
-    if (glowStrength > 0.0) {
-        float edgeMask = smoothstep(0.0, -2.0, s.dist);
-        float borderInner = smoothstep(-1.0, -3.0, s.dist);
-        float edgeProfile = edgeMask - borderInner;
-        float thicknessShadow = pow(edgeProfile, 0.9);
-        float shadowMask = smoothstep(blurSize.y * 0.7, -blurSize.y * 0.7, position.y) *
-                           smoothstep(blurSize.x * 0.7, -blurSize.x * 0.7, position.x);
-        float highlightMask = smoothstep(-blurSize.y * 0.7, blurSize.y * 0.7, position.y) *
-                              smoothstep(-blurSize.x * 0.7, blurSize.x * 0.7, position.x);
-
-        glow = mix(glow, vec3(1.0), thicknessShadow * shadowMask);
-        glow = mix(glow, vec3(1.0), thicknessShadow * highlightMask);
-    }
-
-    return glow;
 }
 
 float adjustedTintStrength(float baseTintStrength, vec3 backgroundColor)
