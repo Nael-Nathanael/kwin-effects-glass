@@ -80,7 +80,9 @@ GlassFragment glassRefraction(vec2 position, vec2 halfBlurSize, vec4 cornerRadiu
         texture(texUnit, coordB).b,
         texture(texUnit, coordG).a
     );
-    return GlassFragment(color, dist, edgeFactor, concaveFactor, vec3(0.0, 0.0, 1.0), 1.0);
+    vec2 outwardXY = length(gradient) > 0.0 ? normalize(gradient) : vec2(0.0);
+    vec3 surfaceNormal = normalize(vec3(outwardXY * concaveFactor * 0.4, 1.0));
+    return GlassFragment(color, dist, edgeFactor, concaveFactor, surfaceNormal, 1.0);
 }
 
 float adjustedTintStrength(float baseTintStrength, vec3 backgroundColor)
@@ -122,7 +124,15 @@ vec4 glass(vec4 sum, vec4 cornerRadius)
             ? glassRefraction(position, halfBlurSize, r, dist, edgeFactor, concaveFactor)
             : snellsRefraction(position, halfBlurSize, r, minHalfSize, dist, edgeFactor, concaveFactor);
     } else {
-        s = GlassFragment(sum, dist, edgeFactor, concaveFactor, vec3(0.0, 0.0, 1.0), 1.0);
+        // Dummy rim data
+        const float h = 1.0;
+        vec2 gradient = vec2(
+            roundedRectangleDist(position + vec2(h, 0), halfBlurSize, cornerRadius) - roundedRectangleDist(position - vec2(h, 0), halfBlurSize, cornerRadius),
+            roundedRectangleDist(position + vec2(0, h), halfBlurSize, cornerRadius) - roundedRectangleDist(position - vec2(0, h), halfBlurSize, cornerRadius)
+        );
+        vec2 outwardXY = length(gradient) > 0.0 ? normalize(gradient) : vec2(0.0);
+        vec3 surfaceNormal = normalize(vec3(outwardXY * concaveFactor * 0.4, 1.0));
+        s = GlassFragment(sum, dist, edgeFactor, concaveFactor, surfaceNormal, 1.0);
     }
 
     vec3 rgb = s.concaveFactor < 1.0 ? glassGlow(position, s) : s.color.rgb;

@@ -3,29 +3,36 @@ uniform float glowStrength;
 uniform int edgeLighting;
 uniform int rimGlow;
 uniform int rimSpecular;
+uniform int rimEdgeHighlight;
+uniform float rimEdgeHighlightStrength;
 uniform float rimWidth;
 
 vec3 glassGlow(vec2 position, GlassFragment s)
 {
-    vec3 result = s.color.rgb;
+    vec3 outline = s.color.rgb;
 
     if (rimGlow == 1) {
         float rimMask = clamp(0.25 * s.concaveFactor, 0.0, glowStrength);
-        result = mix(result, glowColor, rimMask);
+        outline = mix(outline, glowColor, rimMask);
     }
 
     if (edgeLighting == 1) {
-        result += (s.color.rgb * s.concaveFactor);
+        outline += (s.color.rgb * s.concaveFactor);
     }
 
-    return result;
+    return outline;
 }
 
 vec3 glassOutline(vec2 position, GlassFragment s)
 {
-    vec3 result = s.color.rgb;
+    vec3 outline = s.color.rgb;
 
     if (rimSpecular == 1) {
+        vec3 specColor = mix(glowColor, vec3(1.0), 0.5 + 0.5 * rimEdgeHighlightStrength);
+        if(glowStrength == 0.0 || dot(glowColor, glowColor) <= 0.0) {
+            specColor = vec3(1.0);
+        }
+
         float edgeMask = smoothstep(0.0, -2.0 * rimWidth, s.dist);
         float borderInner = smoothstep(-1.0 * rimWidth, -3.0 * rimWidth, s.dist);
         float edgeProfile = edgeMask - borderInner;
@@ -35,9 +42,20 @@ vec3 glassOutline(vec2 position, GlassFragment s)
         float highlightMask = smoothstep(-blurSize.y * 0.7, blurSize.y * 0.7, position.y) *
                               smoothstep(-blurSize.x * 0.7, blurSize.x * 0.7, position.x);
 
-        result = mix(result, vec3(1.0), thicknessShadow * shadowMask);
-        result = mix(result, vec3(1.0), thicknessShadow * highlightMask);
+        outline = mix(outline, specColor, thicknessShadow * shadowMask);
+        outline = mix(outline, specColor, thicknessShadow * highlightMask);
     }
 
-    return result;
+    if (rimEdgeHighlight == 1) {
+        float tOut = clamp(1.0 - s.dist / (-3.5 * rimWidth), 0.0, 1.0);
+        tOut = pow(tOut, max(refractionNormalPow, 0.001));
+        float edgeSat = mix(1.0, 2, tOut);
+        vec3 edgeColor = oklabSaturate(s.color.rgb, edgeSat);
+        float luma = dot(edgeColor, vec3(1));
+        edgeColor *= 1.0 + 0.6 / (luma + 0.4);
+        float band = smoothstep(0.0, -1.5 * rimWidth, s.dist) - smoothstep(-2.0 * rimWidth, -3.5 * rimWidth, s.dist);
+        outline += edgeColor * clamp(band, 0.0, 1.0) * rimEdgeHighlightStrength;
+    }
+
+    return outline;
 }

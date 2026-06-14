@@ -36,6 +36,8 @@ struct GeneralSettings
     QString glowColor;
     bool rimGlow;
     bool rimSpecular;
+    bool rimEdgeHighlight;
+    float rimEdgeHighlightStrength;
     float rimWidth;
     bool edgeLighting;
     bool edgeLightingDock;
