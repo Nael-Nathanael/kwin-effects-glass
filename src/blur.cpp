@@ -1442,6 +1442,21 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
                                  .translated(-scaledBackgroundRect.topLeft());
 #endif
     const BorderRadius nativeCornerRadius = cornerRadius.scaled(viewport.scale()).rounded();
+    const bool isRefractionExcluded =
+        (m_settings.refraction.excludeDocks && w->isDock()) ||
+        (m_settings.refraction.excludeTooltips && w->isTooltip()) ||
+        (m_settings.refraction.excludeOSD && (w->isNotification() || w->isOnScreenDisplay())) ||
+        (m_settings.refraction.excludeMenus && !w->isTooltip() &&
+            (w->isMenu() || w->isDropdownMenu() || w->isPopupMenu() || w->isPopupWindow())) ||
+        (m_settings.refraction.excludeWindows &&
+            !w->isDock() &&
+            !w->isTooltip() &&
+            !w->isNotification() &&
+            !w->isOnScreenDisplay() &&
+            !w->isMenu() &&
+            !w->isDropdownMenu() &&
+            !w->isPopupMenu() &&
+            !w->isPopupWindow());
 
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.mvpMatrixLocation, projectionMatrix);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.colorMatrixLocation, colorMatrix);
@@ -1455,7 +1470,7 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.texUnitLocation, 0);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.blurSizeLocation, QVector2D(nativeBox.width(), nativeBox.height()));
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.edgeSizePixelsLocation, m_settings.refraction.edgeSizePixels);
-    m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.refractionStrengthLocation, m_settings.refraction.refractionStrength);
+    m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.refractionStrengthLocation, isRefractionExcluded ? 0.0f : m_settings.refraction.refractionStrength);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.refractionNormalPowLocation, m_settings.refraction.refractionNormalPow);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.refractionRGBFringingLocation, m_settings.refraction.refractionRGBFringing);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.refractionOffsetStrengthLocation, m_settings.refraction.refractionOffsetStrength);

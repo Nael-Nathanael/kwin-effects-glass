@@ -100,6 +100,11 @@ void BlurSettings::read()
     refraction.refractionOffsetStrength = BlurConfig::refractionOffsetStrength() / 2.0;
     refraction.refractionBevelIntensity = BlurConfig::refractionBevelIntensity() / 10.0;
     refraction.physicallyBased = BlurConfig::physicallyBasedRefraction();
+    refraction.excludeWindows = BlurConfig::refractionExcludeWindows();
+    refraction.excludeDocks = BlurConfig::refractionExcludeDocks();
+    refraction.excludeMenus = BlurConfig::refractionExcludeMenus();
+    refraction.excludeTooltips = BlurConfig::refractionExcludeTooltips();
+    refraction.excludeOSD = BlurConfig::refractionExcludeOSD();
 }
 
 }

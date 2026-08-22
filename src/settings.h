@@ -78,6 +78,11 @@ struct RefractionSettings
     float refractionOffsetStrength;
     float refractionBevelIntensity;
     bool physicallyBased;
+    bool excludeWindows;
+    bool excludeDocks;
+    bool excludeMenus;
+    bool excludeTooltips;
+    bool excludeOSD;
 };
 
 class BlurSettings

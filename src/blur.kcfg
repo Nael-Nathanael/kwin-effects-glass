@@ -178,5 +178,20 @@ class3</default>
         <entry name="PhysicallyBasedRefraction" type="Bool">
             <default>false</default>
         </entry>
+        <entry name="RefractionExcludeWindows" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="RefractionExcludeDocks" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="RefractionExcludeMenus" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="RefractionExcludeTooltips" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="RefractionExcludeOSD" type="Bool">
+            <default>false</default>
+        </entry>
     </group>
 </kcfg>
