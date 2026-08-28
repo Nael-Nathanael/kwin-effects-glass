@@ -87,13 +87,20 @@ GlassFragment glassRefraction(vec2 position, vec2 halfBlurSize, vec4 cornerRadiu
     return GlassFragment(color, dist, edgeFactor, concaveFactor, vec3(0.0, 0.0, 1.0), 1.0);
 }
 
-vec3 glassOutline(vec2 position, GlassFragment s)
+vec3 glassGlow(vec2 position, GlassFragment s)
 {
     float rimMask = clamp(0.25 * s.concaveFactor, 0.0, glowStrength);
     vec3 glow = mix(s.color.rgb, glowColor, rimMask);
     if (edgeLighting == 1) {
         glow += (s.color.rgb * s.concaveFactor);
     }
+
+    return glow;
+}
+
+vec3 glassOutline(vec2 position, GlassFragment s)
+{
+    vec3 glow = s.color.rgb;
 
     if (glowStrength > 0.0) {
         float edgeMask = smoothstep(0.0, -2.0, s.dist);
@@ -154,7 +161,8 @@ vec4 glass(vec4 sum, vec4 cornerRadius)
         s = GlassFragment(sum, dist, edgeFactor, concaveFactor, vec3(0.0, 0.0, 1.0), 1.0);
     }
 
-    vec3 rgb = s.concaveFactor < 1.0 ? glassOutline(position, s) : s.color.rgb;
+    vec3 rgb = s.concaveFactor < 1.0 ? glassGlow(position, s) : s.color.rgb;
     vec3 tinted = mix(rgb, tintColor, adjustedTintStrength(tintStrength, rgb));
-    return roundedRectangle(uv * blurSize, tinted, cornerRadius);
+    vec3 final = glassOutline(position, s);
+    return roundedRectangle(uv * blurSize, final, cornerRadius);
 }
