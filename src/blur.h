@@ -188,6 +188,7 @@ private:
         int glowStrengthLocation;
         int edgeLightingLocation;
         int rimGlowLocation;
+        int glowOffsetLocation;
         int rimSpecularLocation;
         int rimEdgeHighlightLocation;
         int rimEdgeHighlightStrengthLocation;

@@ -2,6 +2,7 @@ uniform vec3 glowColor;
 uniform float glowStrength;
 uniform int edgeLighting;
 uniform int rimGlow;
+uniform float glowOffset;
 uniform int rimSpecular;
 uniform int rimEdgeHighlight;
 uniform float rimEdgeHighlightStrength;
@@ -23,11 +24,16 @@ vec3 glassOutline(vec2 position, GlassFragment s)
     vec3 outline = s.color.rgb;
 
     if (rimGlow == 1 && glowStrength > 0.0) {
-        vec2 edgeDist = blurSize * 0.5 - abs(position);
+        vec2 halfSize = blurSize * 0.5;
+        vec2 edgeDist = halfSize - abs(position);
+        vec2 n = position / halfSize;
         float cornerBlend = min(blurSize.x, blurSize.y) * 0.25;
         float horizontalEdge = smoothstep(-cornerBlend, cornerBlend, edgeDist.x - edgeDist.y);
+        float topLight = clamp(1.0 + glowOffset * n.x, 0.0, 1.0);
+        float bottomLight = clamp(1.0 - glowOffset * n.x, 0.0, 1.0);
+        float lightWeight = mix(bottomLight, topLight, 0.5 + 0.5 * n.y);
         float falloff = exp(s.dist / (2.0 * rimWidth));
-        float glowMask = glowStrength * horizontalEdge * falloff;
+        float glowMask = glowStrength * mix(0.4, 1.0, horizontalEdge) * lightWeight * falloff;
         outline = mix(outline, glowColor, glowMask);
     }
 

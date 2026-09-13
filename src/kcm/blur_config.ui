@@ -1376,14 +1376,76 @@
                </layout>
               </item>
               <item>
-               <widget class="QCheckBox" name="kcfg_RimGlow">
-                <property name="text">
-                 <string>Glow</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayoutRimGlow">
+                <item>
+                 <widget class="QCheckBox" name="kcfg_RimGlow">
+                  <property name="text">
+                   <string>Glow</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacerRimGlow">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelGlowOffsetLeft">
+                  <property name="text">
+                   <string>Left</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="kcfg_GlowOffset">
+                  <property name="toolTip">
+                   <string>Shifts the glow along the horizontal axis. Centered by default.</string>
+                  </property>
+                  <property name="minimum">
+                   <number>-100</number>
+                  </property>
+                  <property name="maximum">
+                   <number>100</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>5</number>
+                  </property>
+                  <property name="pageStep">
+                   <number>10</number>
+                  </property>
+                  <property name="value">
+                   <number>0</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TickPosition::TicksBelow</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>50</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelGlowOffsetRight">
+                  <property name="text">
+                   <string>Right</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
                <widget class="QCheckBox" name="kcfg_RimSpecular">
@@ -1917,6 +1979,24 @@
    <sender>kcfg_RimEdgeHighlight</sender>
    <signal>toggled(bool)</signal>
    <receiver>labelRimEdgeHighlightBright</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>kcfg_RimGlow</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_GlowOffset</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>kcfg_RimGlow</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>labelGlowOffsetLeft</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>kcfg_RimGlow</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>labelGlowOffsetRight</receiver>
    <slot>setEnabled(bool)</slot>
   </connection>
  </connections>
