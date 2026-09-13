@@ -29,11 +29,12 @@ vec3 glassOutline(vec2 position, GlassFragment s)
         vec2 n = position / halfSize;
         float cornerBlend = min(blurSize.x, blurSize.y) * 0.25;
         float horizontalEdge = smoothstep(-cornerBlend, cornerBlend, edgeDist.x - edgeDist.y);
-        float topLight = clamp(1.0 + glowOffset * n.x, 0.0, 1.0);
-        float bottomLight = clamp(1.0 - glowOffset * n.x, 0.0, 1.0);
-        float lightWeight = mix(bottomLight, topLight, 0.5 + 0.5 * n.y);
+        vec2 lightPos = vec2(glowOffset, 1.0);
+        float pointLight = max(1.0 - smoothstep(0.0, 1.0, distance(n, lightPos)),
+                               1.0 - smoothstep(0.0, 1.0, distance(n, -lightPos)));
+        float lightWeight = mix(horizontalEdge, pointLight, abs(glowOffset));
         float falloff = exp(s.dist / (2.0 * rimWidth));
-        float glowMask = glowStrength * mix(0.4, 1.0, horizontalEdge) * lightWeight * falloff;
+        float glowMask = glowStrength * lightWeight * falloff;
         outline = mix(outline, glowColor, glowMask);
     }
 
