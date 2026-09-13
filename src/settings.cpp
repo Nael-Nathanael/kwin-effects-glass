@@ -71,6 +71,8 @@ void BlurSettings::read()
     general.rimEdgeHighlight = BlurConfig::rimEdgeHighlight();
     general.rimEdgeHighlightStrength = std::clamp(BlurConfig::rimEdgeHighlightStrength(), 0, 16) / 10.0f;
     general.rimWidth = std::clamp(BlurConfig::rimWidth(), 10, 40) / 10.0f;
+    general.rimAdaptToRefraction = BlurConfig::rimAdaptToRefraction();
+    general.rimAdaptMultiplier = std::clamp(BlurConfig::rimAdaptMultiplier(), 0, 20) / 10.0f;
     general.edgeLighting = BlurConfig::edgeLighting();
     general.edgeLightingDock = BlurConfig::edgeLightingDock();
     general.edgeLightingTooltip = BlurConfig::edgeLightingTooltip();

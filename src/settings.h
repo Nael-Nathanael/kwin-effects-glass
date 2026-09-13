@@ -40,6 +40,8 @@ struct GeneralSettings
     bool rimEdgeHighlight;
     float rimEdgeHighlightStrength;
     float rimWidth;
+    bool rimAdaptToRefraction;
+    float rimAdaptMultiplier;
     bool edgeLighting;
     bool edgeLightingDock;
     bool edgeLightingTooltip;

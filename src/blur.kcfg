@@ -56,6 +56,12 @@
         <entry name="RimWidth" type="Int">
             <default>10</default>
         </entry>
+        <entry name="RimAdaptToRefraction" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="RimAdaptMultiplier" type="Int">
+            <default>10</default>
+        </entry>
         <entry name="RimEdgeHighlight" type="Bool">
             <default>false</default>
         </entry>

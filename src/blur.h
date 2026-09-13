@@ -193,6 +193,8 @@ private:
         int rimEdgeHighlightLocation;
         int rimEdgeHighlightStrengthLocation;
         int rimWidthLocation;
+        int rimAdaptToRefractionLocation;
+        int rimAdaptMultiplierLocation;
     } m_roundedOnscreenPass;
 
     struct
