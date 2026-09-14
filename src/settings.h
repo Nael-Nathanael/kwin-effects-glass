@@ -36,10 +36,9 @@ struct GeneralSettings
     QString glowColor;
     bool rimGlow;
     float glowOffset;
+    bool rimGlowColorMix;
     bool rimSpecular;
     float rimSpecularScale;
-    bool rimEdgeHighlight;
-    float rimEdgeHighlightStrength;
     float rimWidth;
     bool rimAdaptToRefraction;
     float rimAdaptMultiplier;

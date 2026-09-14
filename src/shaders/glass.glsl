@@ -136,7 +136,8 @@ vec4 glass(vec4 sum, vec4 cornerRadius)
     }
 
     vec3 rgb = s.concaveFactor < 1.0 ? glassGlow(position, s) : s.color.rgb;
+    vec3 untinted = rgb;
     s.color.rgb = mix(rgb, tintColor, adjustedTintStrength(tintStrength, rgb));
-    vec3 final = glassOutline(position, s);
+    vec3 final = glassOutline(position, s, untinted);
     return roundedRectangle(uv * blurSize, final, cornerRadius);
 }

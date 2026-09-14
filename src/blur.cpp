@@ -153,10 +153,9 @@ BlurEffect::BlurEffect()
         m_roundedOnscreenPass.edgeLightingLocation = m_roundedOnscreenPass.shader->uniformLocation("edgeLighting");
         m_roundedOnscreenPass.rimGlowLocation = m_roundedOnscreenPass.shader->uniformLocation("rimGlow");
         m_roundedOnscreenPass.glowOffsetLocation = m_roundedOnscreenPass.shader->uniformLocation("glowOffset");
+        m_roundedOnscreenPass.rimGlowColorMixLocation = m_roundedOnscreenPass.shader->uniformLocation("rimGlowColorMix");
         m_roundedOnscreenPass.rimSpecularLocation = m_roundedOnscreenPass.shader->uniformLocation("rimSpecular");
         m_roundedOnscreenPass.rimSpecularScaleLocation = m_roundedOnscreenPass.shader->uniformLocation("rimSpecularScale");
-        m_roundedOnscreenPass.rimEdgeHighlightLocation = m_roundedOnscreenPass.shader->uniformLocation("rimEdgeHighlight");
-        m_roundedOnscreenPass.rimEdgeHighlightStrengthLocation = m_roundedOnscreenPass.shader->uniformLocation("rimEdgeHighlightStrength");
         m_roundedOnscreenPass.rimWidthLocation = m_roundedOnscreenPass.shader->uniformLocation("rimWidth");
         m_roundedOnscreenPass.rimAdaptToRefractionLocation = m_roundedOnscreenPass.shader->uniformLocation("rimAdaptToRefraction");
         m_roundedOnscreenPass.rimAdaptMultiplierLocation = m_roundedOnscreenPass.shader->uniformLocation("rimAdaptMultiplier");
@@ -1487,10 +1486,9 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.physicallyBasedRefractionLocation, m_settings.refraction.physicallyBased ? 1 : 0);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimGlowLocation, m_settings.general.rimGlow ? 1 : 0);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.glowOffsetLocation, m_settings.general.glowOffset);
+    m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimGlowColorMixLocation, m_settings.general.rimGlowColorMix ? 1 : 0);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimSpecularLocation, m_settings.general.rimSpecular ? 1 : 0);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimSpecularScaleLocation, m_settings.general.rimSpecularScale);
-    m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimEdgeHighlightLocation, m_settings.general.rimEdgeHighlight ? 1 : 0);
-    m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimEdgeHighlightStrengthLocation, m_settings.general.rimEdgeHighlightStrength);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimWidthLocation, m_settings.general.rimWidth);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimAdaptToRefractionLocation, m_settings.general.rimAdaptToRefraction ? 1 : 0);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.rimAdaptMultiplierLocation, m_settings.general.rimAdaptMultiplier);

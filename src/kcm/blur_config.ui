@@ -1523,6 +1523,16 @@
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <widget class="QCheckBox" name="kcfg_RimGlowColorMix">
+                  <property name="toolTip">
+                   <string>Mixes the refracted colors behind the window into the glow instead of using the glow color alone.</string>
+                  </property>
+                  <property name="text">
+                   <string>Color mix</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
               <item>
@@ -1592,78 +1602,6 @@
                  <widget class="QLabel" name="labelRimSpecularScaleWide">
                   <property name="text">
                    <string>Wide</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayoutRimEdgeHighlight">
-                <item>
-                 <widget class="QCheckBox" name="kcfg_RimEdgeHighlight">
-                  <property name="text">
-                   <string>Edge highlight</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacerRimEdgeHighlight">
-                  <property name="orientation">
-                   <enum>Qt::Orientation::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>20</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QLabel" name="labelRimEdgeHighlightSubtle">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>Subtle</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QSlider" name="kcfg_RimEdgeHighlightStrength">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="minimum">
-                   <number>0</number>
-                  </property>
-                  <property name="maximum">
-                   <number>16</number>
-                  </property>
-                  <property name="singleStep">
-                   <number>2</number>
-                  </property>
-                  <property name="pageStep">
-                   <number>2</number>
-                  </property>
-                  <property name="value">
-                   <number>6</number>
-                  </property>
-                  <property name="orientation">
-                   <enum>Qt::Orientation::Horizontal</enum>
-                  </property>
-                  <property name="tickPosition">
-                   <enum>QSlider::TickPosition::TicksBelow</enum>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QLabel" name="labelRimEdgeHighlightBright">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
-                  <property name="text">
-                   <string>Bright</string>
                   </property>
                  </widget>
                 </item>
@@ -2125,24 +2063,6 @@
    <slot>setEnabled(bool)</slot>
   </connection>
   <connection>
-   <sender>kcfg_RimEdgeHighlight</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>kcfg_RimEdgeHighlightStrength</receiver>
-   <slot>setEnabled(bool)</slot>
-  </connection>
-  <connection>
-   <sender>kcfg_RimEdgeHighlight</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>labelRimEdgeHighlightSubtle</receiver>
-   <slot>setEnabled(bool)</slot>
-  </connection>
-  <connection>
-   <sender>kcfg_RimEdgeHighlight</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>labelRimEdgeHighlightBright</receiver>
-   <slot>setEnabled(bool)</slot>
-  </connection>
-  <connection>
    <sender>kcfg_RimGlow</sender>
    <signal>toggled(bool)</signal>
    <receiver>kcfg_GlowOffset</receiver>
@@ -2158,6 +2078,12 @@
    <sender>kcfg_RimGlow</sender>
    <signal>toggled(bool)</signal>
    <receiver>labelGlowOffsetRight</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>kcfg_RimGlow</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_RimGlowColorMix</receiver>
    <slot>setEnabled(bool)</slot>
   </connection>
   <connection>
