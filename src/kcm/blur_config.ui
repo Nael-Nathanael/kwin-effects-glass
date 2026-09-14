@@ -1357,7 +1357,7 @@
                    <number>2</number>
                   </property>
                   <property name="value">
-                   <number>10</number>
+                   <number>2</number>
                   </property>
                   <property name="orientation">
                    <enum>Qt::Orientation::Horizontal</enum>
@@ -1410,7 +1410,7 @@
                    <number>1</number>
                   </property>
                   <property name="value">
-                   <number>10</number>
+                   <number>19</number>
                   </property>
                   <property name="orientation">
                    <enum>Qt::Orientation::Horizontal</enum>
@@ -1461,7 +1461,7 @@
                    <string>Glow</string>
                   </property>
                   <property name="checked">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1480,6 +1480,9 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="labelGlowOffsetLeft">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="text">
                    <string>Left</string>
                   </property>
@@ -1487,6 +1490,9 @@
                 </item>
                 <item>
                  <widget class="QSlider" name="kcfg_GlowOffset">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="toolTip">
                    <string>Shifts the glow along the horizontal axis. Centered by default.</string>
                   </property>
@@ -1518,6 +1524,9 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="labelGlowOffsetRight">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="text">
                    <string>Right</string>
                   </property>
@@ -1525,6 +1534,9 @@
                 </item>
                 <item>
                  <widget class="QCheckBox" name="kcfg_RimGlowColorMix">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="toolTip">
                    <string>Mixes the refracted colors behind the window into the glow instead of using the glow color alone.</string>
                   </property>
@@ -1543,7 +1555,7 @@
                    <string>Specular</string>
                   </property>
                   <property name="checked">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1562,6 +1574,9 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="labelRimSpecularScaleThin">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="text">
                    <string>Thin</string>
                   </property>
@@ -1569,6 +1584,9 @@
                 </item>
                 <item>
                  <widget class="QSlider" name="kcfg_RimSpecularScale">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="toolTip">
                    <string>Scales the width of the specular highlight band on the rim.</string>
                   </property>
@@ -1600,6 +1618,9 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="labelRimSpecularScaleWide">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
                   <property name="text">
                    <string>Wide</string>
                   </property>
