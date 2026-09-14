@@ -53,6 +53,9 @@
         <entry name="RimSpecular" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="RimSpecularScale" type="Int">
+            <default>10</default>
+        </entry>
         <entry name="RimWidth" type="Int">
             <default>10</default>
         </entry>

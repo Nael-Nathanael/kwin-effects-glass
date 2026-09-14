@@ -1526,11 +1526,76 @@
                </layout>
               </item>
               <item>
-               <widget class="QCheckBox" name="kcfg_RimSpecular">
-                <property name="text">
-                 <string>Specular</string>
-                </property>
-               </widget>
+               <layout class="QHBoxLayout" name="horizontalLayoutRimSpecular">
+                <item>
+                 <widget class="QCheckBox" name="kcfg_RimSpecular">
+                  <property name="text">
+                   <string>Specular</string>
+                  </property>
+                  <property name="checked">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacerRimSpecular">
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelRimSpecularScaleThin">
+                  <property name="text">
+                   <string>Thin</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSlider" name="kcfg_RimSpecularScale">
+                  <property name="toolTip">
+                   <string>Scales the width of the specular highlight band on the rim.</string>
+                  </property>
+                  <property name="minimum">
+                   <number>0</number>
+                  </property>
+                  <property name="maximum">
+                   <number>20</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1</number>
+                  </property>
+                  <property name="pageStep">
+                   <number>5</number>
+                  </property>
+                  <property name="value">
+                   <number>10</number>
+                  </property>
+                  <property name="orientation">
+                   <enum>Qt::Orientation::Horizontal</enum>
+                  </property>
+                  <property name="tickPosition">
+                   <enum>QSlider::TickPosition::TicksBelow</enum>
+                  </property>
+                  <property name="tickInterval">
+                   <number>5</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="labelRimSpecularScaleWide">
+                  <property name="text">
+                   <string>Wide</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayoutRimEdgeHighlight">
@@ -2041,6 +2106,24 @@
    <slot>setEnabled(bool)</slot>
   </connection>
 
+  <connection>
+   <sender>kcfg_RimSpecular</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>kcfg_RimSpecularScale</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>kcfg_RimSpecular</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>labelRimSpecularScaleThin</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
+  <connection>
+   <sender>kcfg_RimSpecular</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>labelRimSpecularScaleWide</receiver>
+   <slot>setEnabled(bool)</slot>
+  </connection>
   <connection>
    <sender>kcfg_RimEdgeHighlight</sender>
    <signal>toggled(bool)</signal>

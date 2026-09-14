@@ -68,6 +68,7 @@ void BlurSettings::read()
     general.rimGlow = BlurConfig::rimGlow();
     general.glowOffset = std::clamp(BlurConfig::glowOffset(), -100, 100) / 100.0f;
     general.rimSpecular = BlurConfig::rimSpecular();
+    general.rimSpecularScale = std::clamp(BlurConfig::rimSpecularScale(), 0, 20) / 10.0f;
     general.rimEdgeHighlight = BlurConfig::rimEdgeHighlight();
     general.rimEdgeHighlightStrength = std::clamp(BlurConfig::rimEdgeHighlightStrength(), 0, 16) / 10.0f;
     general.rimWidth = std::clamp(BlurConfig::rimWidth(), 10, 40) / 10.0f;

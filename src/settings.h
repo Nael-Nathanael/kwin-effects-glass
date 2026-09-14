@@ -37,6 +37,7 @@ struct GeneralSettings
     bool rimGlow;
     float glowOffset;
     bool rimSpecular;
+    float rimSpecularScale;
     bool rimEdgeHighlight;
     float rimEdgeHighlightStrength;
     float rimWidth;
