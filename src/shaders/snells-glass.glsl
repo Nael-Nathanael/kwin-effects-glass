@@ -1,3 +1,6 @@
+uniform float refractionOffsetStrength;
+uniform float refractionBevelIntensity;
+
 vec4 processSample(sampler2D tex, vec2 baseUv, vec3 glassNormal, float ior, float dispersion, float magnitude, vec2 uvScale, vec2 lensShift)
 {
     vec3 viewRay = vec3(0.0, 0.0, -1.0);

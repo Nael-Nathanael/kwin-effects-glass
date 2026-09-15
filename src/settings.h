@@ -34,6 +34,14 @@ struct GeneralSettings
     float autoTintAlphaMin;
     float autoTintAlphaMax;
     QString glowColor;
+    bool rimGlow;
+    float glowOffset;
+    bool rimGlowColorMix;
+    bool rimSpecular;
+    float rimSpecularScale;
+    float rimWidth;
+    bool rimAdaptToRefraction;
+    float rimAdaptMultiplier;
     bool edgeLighting;
     bool edgeLightingDock;
     bool edgeLightingTooltip;
