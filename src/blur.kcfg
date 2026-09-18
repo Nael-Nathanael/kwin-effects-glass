@@ -69,7 +69,7 @@
             <default>2</default>
         </entry>
         <entry name="BlurStrength" type="Int">
-            <default>15</default>
+            <default>6</default>
         </entry>
         <entry name="BlurFinetune" type="Int">
             <default>3</default>
@@ -78,19 +78,19 @@
             <default>true</default>
         </entry>
         <entry name="NoiseStrength" type="Int">
-            <default>5</default>
+            <default>0</default>
         </entry>
         <entry name="DecorationBlurStrength" type="Int">
-            <default>15</default>
+            <default>6</default>
         </entry>
         <entry name="DecorationNoiseStrength" type="Int">
-            <default>5</default>
+            <default>0</default>
         </entry>
         <entry name="DockBlurStrength" type="Int">
-            <default>15</default>
+            <default>6</default>
         </entry>
         <entry name="DockNoiseStrength" type="Int">
-            <default>5</default>
+            <default>0</default>
         </entry>
         <entry name="BlurDecorations" type="Bool">
             <default>false</default>
@@ -189,7 +189,7 @@
             <default>20.0</default>
         </entry>
         <entry name="RefractionRGBFringing" type="Double">
-            <default>1.0</default>
+            <default>0.0</default>
         </entry>
         <entry name="RefractionOffsetStrength" type="Double">
             <default>8.0</default>
