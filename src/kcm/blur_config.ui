@@ -783,6 +783,9 @@
                <property name="text">
                 <string>Blur all except matching</string>
                </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
