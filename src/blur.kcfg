@@ -96,15 +96,13 @@
             <default>false</default>
         </entry>
         <entry name="WindowClasses" type="String">
-            <default>class1
-class2
-class3</default>
+            <default></default>
         </entry>
         <entry name="BlurMatching" type="Bool">
-            <default>true</default>
+            <default>false</default>
         </entry>
         <entry name="BlurNonMatching" type="Bool">
-            <default>false</default>
+            <default>true</default>
         </entry>
         <entry name="TransparentBlur" type="Bool">
             <default>true</default>
