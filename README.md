@@ -1,3 +1,28 @@
+# This is a modified fork
+
+Branch `per-pill-glass` of a fork of [4v3ngR/kwin-effects-glass](https://github.com/4v3ngR/kwin-effects-glass).
+Everything below this section is upstream's README. Changed here:
+
+- **One glass shape per pill.** A panel whose blur area is several separate pieces
+  (Panel Colorizer widget "islands") gets refraction and rim on every piece, not only on
+  the panel's outer edge. A piece's corner rounding is measured from its own shape; a
+  square piece still uses the *Dock corner radius* setting.
+- **Works on KWin 6.6.** Shaders are also shipped under the `_core` names KWin 6.6 asks
+  for. Without them the effect loads, logs `Failed to read shader`, and draws nothing.
+- Glass position is taken from the drawn rectangle instead of the texture coordinate.
+  Same result when a window's blur area is its whole frame; correct result when it is not.
+
+Build this branch, not upstream:
+
+```sh
+git clone -b per-pill-glass https://github.com/Nael-Nathanael/kwin-effects-glass
+```
+
+Then follow *Building* below from `cd kwin-effects-glass`. After installing, log out and
+in: KWin keeps an already-loaded effect in memory.
+
+Made for [plasma-liquid-glass](https://github.com/Nael-Nathanael/plasma-liquid-glass).
+
 # Warning!!! Translucency effect users
 Enabling translucent windows via the translucency effect plugin results in all the blur effect plugins having less effect. This occurs for the default blur plugin, the better blur DX plugin, this glass plugin, as well as the old glass plugin. Using transparency level window rules however do not impact the blur effect. If the blur effect disappears after an update, check to see if you have the translucency efffect plugin enabled and if so, check if the default blur effect plugin is also suffering. If so, raise a bug with the maintainers of the translucency effect plugin.
 
