@@ -47,7 +47,7 @@ GlassFragment snellsRefraction(vec2 position, vec2 halfBlurSize, vec4 cornerRadi
     float cornerWeight = dot(normalizedPos, normalizedPos) * refractionOffsetStrength;
     surfaceNormal += normalizedPos * concaveFactor * cornerWeight;
 
-    vec2 uvScale = 1.0 / blurSize;
+    vec2 uvScale = 1.0 / texSize;
     vec2 lensShift = -surfaceNormal * lensMagnitude * uvScale;
 
     float refractionMagnitude = lensMagnitude * refractionStrength;

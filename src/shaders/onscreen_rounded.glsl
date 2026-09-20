@@ -8,9 +8,16 @@ uniform vec4 box;
 uniform vec4 cornerRadius;
 uniform float opacity;
 uniform vec2 blurSize;
+uniform vec2 texSize;
 
 in vec2 uv;
 in vec2 vertex;
+
+// Pixel position relative to the glass box centre, y up like uv.
+vec2 glassPosition()
+{
+    return vec2(vertex.x - box.x, box.y - vertex.y);
+}
 #include "oklab.glsl"
 #include "glass.glsl"
 
@@ -19,7 +26,7 @@ void main(void)
     vec2 halfBlurSize = blurSize * 0.5;
     float minHalfSize = min(halfBlurSize.x, halfBlurSize.y);
 
-    vec2 position = uv * blurSize - halfBlurSize.xy;
+    vec2 position = glassPosition();
     float dist = roundedRectangleDist(position, halfBlurSize, cornerRadius);
 
     vec4 sum = vec4(0);

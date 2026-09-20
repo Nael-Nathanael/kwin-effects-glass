@@ -136,6 +136,7 @@ BlurEffect::BlurEffect()
         m_roundedOnscreenPass.opacityLocation = m_roundedOnscreenPass.shader->uniformLocation("opacity");
         m_roundedOnscreenPass.texUnitLocation = m_roundedOnscreenPass.shader->uniformLocation("texUnit");
         m_roundedOnscreenPass.blurSizeLocation = m_roundedOnscreenPass.shader->uniformLocation("blurSize");
+        m_roundedOnscreenPass.texSizeLocation = m_roundedOnscreenPass.shader->uniformLocation("texSize");
         m_roundedOnscreenPass.edgeSizePixelsLocation = m_roundedOnscreenPass.shader->uniformLocation("edgeSizePixels");
         m_roundedOnscreenPass.refractionStrengthLocation = m_roundedOnscreenPass.shader->uniformLocation("refractionStrength");
         m_roundedOnscreenPass.refractionNormalPowLocation = m_roundedOnscreenPass.shader->uniformLocation("refractionNormalPow");
@@ -1148,11 +1149,11 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
     const auto opacity = data.opacity();
 
     // Get the effective shape that will be painted on screen. It's possible that all of it will be clipped.
-    auto buildEffectiveShape = [&](const BlurRegion &shape) {
+    auto buildEffectiveShape = [&](const BlurRegion &shape, bool clip = true) {
 #ifdef GLASS_X11
         QList<QRectF> effectiveShape;
         effectiveShape.reserve(shape.rectCount());
-        if (deviceRegion != infiniteRegion()) {
+        if (clip && deviceRegion != infiniteRegion()) {
             for (const QRect &clipRect : deviceRegion) {
                 const QRectF deviceClipRect = snapToPixelGridF(scaledRect(clipRect, viewport.scale()))
                                                   .translated(-deviceBackgroundRect.topLeft());
@@ -1172,7 +1173,7 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
 #else
         QList<RectF> effectiveShape;
         effectiveShape.reserve(shape.rects().size());
-        if (deviceRegion != Region::infinite()) {
+        if (clip && deviceRegion != Region::infinite()) {
             for (const Rect &clipRect : deviceRegion.rects()) {
                 const RectF deviceClipRect = clipRect.translated(-deviceBackgroundRect.topLeft());
                 for (const Rect &shapeRect : shape.rects()) {
@@ -1192,8 +1193,71 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
     };
 
     const auto effectiveEffectShape = buildEffectiveShape(effectShape);
-    const auto effectiveContentShape = splitRenderRegions ? buildEffectiveShape(contentShape) : effectiveEffectShape;
+    auto effectiveContentShape = splitRenderRegions ? buildEffectiveShape(contentShape) : effectiveEffectShape;
     const auto effectiveFrameShape = splitRenderRegions ? buildEffectiveShape(frameShape) : decltype(effectiveEffectShape){};
+
+    // A dock's blur region can hold separate islands, one per widget pill. Each island
+    // is drawn as its own glass box, so its rects have to sit together in the vertex buffer.
+    struct GlassIsland
+    {
+        QRectF box;
+        int firstRect = 0;
+        int rectCount = 0;
+    };
+    QList<GlassIsland> dockIslands;
+    if (w->isDock() && frameShape.isEmpty() && !contentShape.isEmpty()) {
+        // Islands come from the unclipped shape: a partial repaint must not move the glass edges.
+        const auto fullShape = buildEffectiveShape(contentShape, false);
+        const int fullCount = fullShape.size();
+        QList<int> parent(fullCount);
+        std::iota(parent.begin(), parent.end(), 0);
+        auto root = [&](int i) {
+            while (parent[i] != i) {
+                i = parent[i] = parent[parent[i]];
+            }
+            return i;
+        };
+        for (int i = 0; i < fullCount; ++i) {
+            for (int j = i + 1; j < fullCount; ++j) {
+                const auto &a = fullShape[i];
+                const auto &b = fullShape[j];
+                if (a.left() <= b.right() && b.left() <= a.right() && a.top() <= b.bottom() && b.top() <= a.bottom()) {
+                    parent[root(i)] = root(j);
+                }
+            }
+        }
+        QHash<int, int> islandOfRoot;
+        for (int i = 0; i < fullCount; ++i) {
+            const auto &r = fullShape[i];
+            const QRectF rect(r.left(), r.top(), r.right() - r.left(), r.bottom() - r.top());
+            const auto it = islandOfRoot.constFind(root(i));
+            if (it == islandOfRoot.constEnd()) {
+                islandOfRoot.insert(root(i), dockIslands.size());
+                dockIslands.append(GlassIsland{.box = rect});
+            } else {
+                dockIslands[*it].box |= rect;
+            }
+        }
+
+        auto islandOf = [&](const auto &r) {
+            const QPointF center((r.left() + r.right()) * 0.5, (r.top() + r.bottom()) * 0.5);
+            for (int i = 0; i < dockIslands.size(); ++i) {
+                if (dockIslands[i].box.contains(center)) {
+                    return i;
+                }
+            }
+            return 0;
+        };
+        std::stable_sort(effectiveContentShape.begin(), effectiveContentShape.end(), [&](const auto &a, const auto &b) {
+            return islandOf(a) < islandOf(b);
+        });
+        for (const auto &r : effectiveContentShape) {
+            dockIslands[islandOf(r)].rectCount++;
+        }
+        for (int i = 1; i < dockIslands.size(); ++i) {
+            dockIslands[i].firstRect = dockIslands[i - 1].firstRect + dockIslands[i - 1].rectCount;
+        }
+    }
 
     if (effectiveEffectShape.isEmpty()) {
         return;
@@ -1567,10 +1631,27 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
 
     GLTexture *contentBlurredTexture = runBlurPass(splitBlurSettings ? contentBlurSettings : combinedBlurSettings);
     m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.tintStrengthLocation, contentTintStrength);
-    drawBlurredRegion(contentBlurredTexture,
-                      6,
-                      contentVertexCount,
-                      splitBlurSettings ? contentBlurSettings.offset : combinedBlurSettings.offset);
+    m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.texSizeLocation, QVector2D(scaledBackgroundRect.width(), scaledBackgroundRect.height()));
+    const float contentBlurOffset = splitBlurSettings ? contentBlurSettings.offset : combinedBlurSettings.offset;
+    if (!dockIslands.isEmpty()) {
+        for (const GlassIsland &island : dockIslands) {
+            if (island.rectCount == 0) {
+                continue;
+            }
+            const QRectF &box = island.box;
+            const float maxRadius = std::min(box.width(), box.height()) * 0.5;
+            QVector4D radius = nativeCornerRadius.toVector();
+            for (int i = 0; i < 4; ++i) {
+                radius[i] = std::min(radius[i], maxRadius);
+            }
+            m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.boxLocation, QVector4D(box.center().x(), box.center().y(), box.width() * 0.5, box.height() * 0.5));
+            m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.blurSizeLocation, QVector2D(box.width(), box.height()));
+            m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.cornerRadiusLocation, radius);
+            drawBlurredRegion(contentBlurredTexture, 6 + island.firstRect * 6, island.rectCount * 6, contentBlurOffset);
+        }
+    } else {
+        drawBlurredRegion(contentBlurredTexture, 6, contentVertexCount, contentBlurOffset);
+    }
 
     if (splitRenderRegions && frameVertexCount > 0) {
         GLTexture *frameBlurredTexture = splitBlurSettings ? runBlurPass(m_decorationBlurSettings) : contentBlurredTexture;

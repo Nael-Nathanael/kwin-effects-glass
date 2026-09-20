@@ -170,6 +170,7 @@ private:
         int texUnitLocation;
 
         int blurSizeLocation;
+        int texSizeLocation;
         int edgeSizePixelsLocation;
         int refractionStrengthLocation;
         int refractionNormalPowLocation;

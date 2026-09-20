@@ -57,6 +57,10 @@ GlassFragment glassRefraction(vec2 position, vec2 halfBlurSize, vec4 cornerRadiu
 
     float finalStrength = min(0.4 * concaveFactor * refractionStrength, 1.0);
 
+    // Offsets are fractions of the glass box; the texture may be larger than it.
+    vec2 boxToTex = blurSize / texSize;
+    normal *= boxToTex;
+
     vec2 refractOffsetG = -normal.xy * finalStrength;
     vec2 refractOffsetR = -normal.xy * finalStrength;
     vec2 refractOffsetB = -normal.xy * finalStrength;
@@ -106,7 +110,7 @@ vec4 glass(vec4 sum, vec4 cornerRadius)
     vec2 halfBlurSize = blurSize * 0.5;
     float minHalfSize = min(halfBlurSize.x, halfBlurSize.y);
 
-    vec2 position = uv * blurSize - halfBlurSize.xy;
+    vec2 position = glassPosition();
     float dist = roundedRectangleDist(position, halfBlurSize, cornerRadius);
 
     if (dist >= 0.0) {
@@ -139,5 +143,5 @@ vec4 glass(vec4 sum, vec4 cornerRadius)
     vec3 untinted = rgb;
     s.color.rgb = mix(rgb, tintColor, adjustedTintStrength(tintStrength, rgb));
     vec3 final = glassOutline(position, s, untinted);
-    return roundedRectangle(uv * blurSize, final, cornerRadius);
+    return roundedRectangle(position + halfBlurSize, final, cornerRadius);
 }
