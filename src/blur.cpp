@@ -53,6 +53,7 @@
 #include <algorithm>
 #include <cmath> // for ceil()
 #include <cstdlib>
+#include <numeric>
 
 #include <KConfigGroup>
 #include <KSharedConfig>
@@ -1201,6 +1202,7 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
     struct GlassIsland
     {
         QRectF box;
+        QRectF topRow;
         int firstRect = 0;
         int rectCount = 0;
     };
@@ -1218,10 +1220,14 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
             return i;
         };
         for (int i = 0; i < fullCount; ++i) {
+            const auto &a = fullShape[i];
             for (int j = i + 1; j < fullCount; ++j) {
-                const auto &a = fullShape[i];
                 const auto &b = fullShape[j];
-                if (a.left() <= b.right() && b.left() <= a.right() && a.top() <= b.bottom() && b.top() <= a.bottom()) {
+                // Region rects are sorted by top edge: nothing further down can touch `a`.
+                if (b.top() > a.bottom()) {
+                    break;
+                }
+                if (a.left() <= b.right() && b.left() <= a.right()) {
                     parent[root(i)] = root(j);
                 }
             }
@@ -1233,7 +1239,7 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
             const auto it = islandOfRoot.constFind(root(i));
             if (it == islandOfRoot.constEnd()) {
                 islandOfRoot.insert(root(i), dockIslands.size());
-                dockIslands.append(GlassIsland{.box = rect});
+                dockIslands.append(GlassIsland{.box = rect, .topRow = rect});
             } else {
                 dockIslands[*it].box |= rect;
             }
@@ -1639,10 +1645,21 @@ void BlurEffect::blur(const RenderTarget &renderTarget, const RenderViewport &vi
                 continue;
             }
             const QRectF &box = island.box;
+            // The island's own rounding. Panel masks round corners with a quadratic curve of
+            // size R, which passes `inset` in from the side at `rowHeight` below the top:
+            // inset = (sqrt(R) - sqrt(rowHeight))^2. A circle of 0.85 R fits that curve best.
             const float maxRadius = std::min(box.width(), box.height()) * 0.5;
-            QVector4D radius = nativeCornerRadius.toVector();
-            for (int i = 0; i < 4; ++i) {
-                radius[i] = std::min(radius[i], maxRadius);
+            const float inset = std::max(island.topRow.left() - box.left(), box.right() - island.topRow.right());
+            const float rowHeight = island.topRow.height();
+            const float curveSize = inset > 0.0f ? std::pow(std::sqrt(inset) + std::sqrt(rowHeight), 2.0f) : 0.0f;
+            const float r = std::min(0.85f * curveSize, maxRadius);
+            // A square island keeps the configured dock radius.
+            QVector4D radius(r, r, r, r);
+            if (curveSize == 0.0f) {
+                radius = nativeCornerRadius.toVector();
+                for (int i = 0; i < 4; ++i) {
+                    radius[i] = std::min(radius[i], maxRadius);
+                }
             }
             m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.boxLocation, QVector4D(box.center().x(), box.center().y(), box.width() * 0.5, box.height() * 0.5));
             m_roundedOnscreenPass.shader->setUniform(m_roundedOnscreenPass.blurSizeLocation, QVector2D(box.width(), box.height()));
